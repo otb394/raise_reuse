@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 import os
 import platform
 import pandas as pd
@@ -42,11 +41,17 @@ def extract_info(fil, extension):
     lines = 0
     pat = re_map[extension]
     imports = set()
-    with open(fil) as f:
-        for line in f:
-            lines+=1
-            if (pat.match(line)):
-                imports.add(line.strip())
+    try:
+        with open(fil) as f:
+            for line in f:
+                lines+=1
+                try:
+                    if (pat.match(line)):
+                        imports.add(line.strip())
+                except:
+                    print("Encoding error")
+    except:
+        print("Encoding eror")
     return lines, list(imports)
 
 # Plural because more than one module may be imported in one statement
@@ -90,21 +95,20 @@ def extract_modules(imp, extension):
     else:
         return None
 
-def is_internal_import(imp, extension, internal):
+def is_internal_mod_python(statement, internal, source_dir):
+    parts = statement.split(".")
+    return all(x in internal for x in parts) or (parts[0] == source_dir)
+
+def is_internal_import(imp, extension, internal, source_dir):
     current_mods = extract_modules(imp, extension)
     if (extension == 'py'):
-        all_curr_mods = set()
-        for mod in current_mods:
-            all_pack_mods = mod.split(".")
-            for pack_mods in all_pack_mods:
-                all_curr_mods.add(pack_mods)
-        return all(elem in internal for elem in all_curr_mods)
+        return all(is_internal_mod_python(c, internal, source_dir) for c in current_mods) 
     else:
         return None
 
 # Returns true, if an import statement is for an external package
-def is_external_import(imp, extension, internal):
-    return not is_internal_import(imp, extension, internal)
+def is_external_import(imp, extension, internal, source_dir):
+    return not is_internal_import(imp, extension, internal, source_dir)
 
 # Package assumed to be external
 def is_package_CS(imp, extension):
@@ -119,7 +123,11 @@ def is_package_CS(imp, extension):
 
 extension = sys.argv[1]
 path_arg = sys.argv[2]
-project_name = sys.argv[3]
+source_dir_name = ntpath.basename(path_arg)
+if (len(sys.argv) > 3):
+    project_name = sys.argv[3]
+else:
+    project_name = source_dir_name
 
 if (not os.path.exists(path_arg)):
     print("Path not found")
@@ -129,8 +137,8 @@ files = get_files(path_arg, extension)
 dirs = get_directories(path_arg, extension)
 
 internal_modules = get_internal_modules(files, dirs, extension)
-print("Internal modules")
-print(internal_modules)
+#print("Internal modules")
+#print(internal_modules)
 
 nfiles = 0
 n_ext_cs_imp = 0
@@ -143,7 +151,7 @@ for f in files:
     n_loc +=lines
     n_imp += len(imp)
     for statement in imp:
-        if (is_external_import(statement, extension, internal_modules)):
+        if (is_external_import(statement, extension, internal_modules, source_dir_name)):
             if (is_package_CS(statement, extension)):
                 print(statement)
                 n_ext_cs_imp+=1
@@ -152,3 +160,4 @@ for f in files:
 data = [[project_name, nfiles, n_ext_cs_imp, n_ext_noncs_imp, n_imp, n_loc]]
 df = pd.DataFrame(data, columns=['Project Name', 'Files', 'External CS Imports', 'External Non CS Imports', 'All Imports', 'Lines of code'])
 print(df)
+df.to_csv(source_dir_name + '.csv', index=False)

@@ -1,0 +1,15 @@
+Project Name,Files,External CS Imports,External Non CS Imports,All Imports,Lines of code
+mast,798,159,1304,2531,68161
+radical.pilot,280,0,862,1114,50726
+yt,842,0,1682,3561,170846
+metpy,119,0,387,546,40302
+RMG-Py,415,0,748,1413,202533
+openmmtools,55,0,269,306,42706
+signac-flow,58,0,276,307,12083
+abaco,104,0,348,479,21314
+hydroshare,791,0,1812,2653,134376
+foyer,33,0,102,148,4117
+luigi,255,0,811,1534,62391
+APBS,529,0,640,1765,155797
+parsl,347,0,575,1354,29533
+yank,37,13,184,214,22539
