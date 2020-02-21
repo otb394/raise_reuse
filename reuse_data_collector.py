@@ -9,6 +9,7 @@ import ntpath
 
 ext_to_regex = {'py': '(?m)^(?:from[ ]+(\S+)[ ]+)?import[ ]+(\S+)(?:[ ]+as[ ]+\S+)?[ ]*$'}
 re_map = {'py': re.compile(ext_to_regex['py'])}
+cs_external_packages = {'py' : ["abaco","yank","signac-flow","forcebalance","openmmtools","foyer","parsl","radical.pilot","apbs-pdb2pqr","MAST","hydroshare","MetPy","luigi","RMG-Py","mdanalysis","yt","pymatgen","galaxy"]}
 
 def get_loc(fil):
     #Improve to remove blank lines and comments
@@ -105,9 +106,20 @@ def is_internal_import(imp, extension, internal):
 def is_external_import(imp, extension, internal):
     return not is_internal_import(imp, extension, internal)
 
+# Package assumed to be external
+def is_package_CS(imp, extension):
+    externals =  cs_external_packages[extension]# Get this list
+    externals = [x.lower() for x in externals]
+    if (extension == "py"):
+        packs = extract_modules(imp, extension)
+        packs = [x.split('.')[0] for x in packs]
+        return any(elem.lower() in externals for elem in packs)
+    else:
+        return None
 
 extension = sys.argv[1]
 path_arg = sys.argv[2]
+project_name = sys.argv[3]
 
 if (not os.path.exists(path_arg)):
     print("Path not found")
@@ -120,15 +132,23 @@ internal_modules = get_internal_modules(files, dirs, extension)
 print("Internal modules")
 print(internal_modules)
 
-data = []
+nfiles = 0
+n_ext_cs_imp = 0
+n_ext_noncs_imp = 0
+n_imp = 0
+n_loc = 0
 for f in files:
+    nfiles+=1
     lines, imp = extract_info(f, extension)
-    imp_data = [(statement, 'external') if is_external_import(statement, extension, internal_modules) \
-                                        else (statement, 'internal') for statement in imp]
-    imp_df = pd.DataFrame(imp_data, columns=['Import', 'Status'])
-    print(imp_df)
-    print()
-    data.append([f, lines, imp, len(imp)])
-
-df = pd.DataFrame(data, columns=['Files path', 'LOC', 'Imports','No. of imports'])
+    n_loc +=lines
+    n_imp += len(imp)
+    for statement in imp:
+        if (is_external_import(statement, extension, internal_modules)):
+            if (is_package_CS(statement, extension)):
+                print(statement)
+                n_ext_cs_imp+=1
+            else:
+                n_ext_noncs_imp+=1
+data = [[project_name, nfiles, n_ext_cs_imp, n_ext_noncs_imp, n_imp, n_loc]]
+df = pd.DataFrame(data, columns=['Project Name', 'Files', 'External CS Imports', 'External Non CS Imports', 'All Imports', 'Lines of code'])
 print(df)
