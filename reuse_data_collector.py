@@ -145,11 +145,13 @@ n_ext_cs_imp = 0
 n_ext_noncs_imp = 0
 n_imp = 0
 n_loc = 0
+n_files_with_external_imps = 0
 for f in files:
     nfiles+=1
     lines, imp = extract_info(f, extension)
     n_loc +=lines
     n_imp += len(imp)
+    external_imp_flag = False
     for statement in imp:
         if (is_external_import(statement, extension, internal_modules, source_dir_name)):
             if (is_package_CS(statement, extension)):
@@ -157,7 +159,11 @@ for f in files:
                 n_ext_cs_imp+=1
             else:
                 n_ext_noncs_imp+=1
-data = [[project_name, nfiles, n_ext_cs_imp, n_ext_noncs_imp, n_imp, n_loc]]
-df = pd.DataFrame(data, columns=['Project Name', 'Files', 'External CS Imports', 'External Non CS Imports', 'All Imports', 'Lines of code'])
+            external_imp_flag = True
+    if (external_imp_flag):
+        n_files_with_external_imps += 1
+
+data = [[project_name, nfiles, n_files_with_external_imps, n_ext_cs_imp, n_ext_noncs_imp, n_imp, n_loc]]
+df = pd.DataFrame(data, columns=['Project Name', 'Files', 'Files with external imports', 'External CS Imports', 'External Non CS Imports', 'All Imports', 'Lines of code'])
 print(df)
 df.to_csv(source_dir_name + '.csv', index=False)
