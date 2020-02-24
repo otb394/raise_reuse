@@ -6,6 +6,7 @@ import sys
 import re
 import ntpath
 
+ext_to_multiple_ext = {'py': ['py'], 'cpp': ['cpp', 'cxx', 'cc']}
 ext_to_regex = {'py': '(?m)^(?:from[ ]+(\S+)[ ]+)?import[ ]+(\S+)(?:[ ]+as[ ]+\S+)?[ ]*$'}
 re_map = {'py': re.compile(ext_to_regex['py'])}
 cs_external_packages = {'py' : ["abaco","yank","signac-flow","forcebalance","openmmtools","foyer","parsl","radical.pilot","apbs-pdb2pqr","MAST","hydroshare","MetPy","luigi","RMG-Py","mdanalysis","yt","pymatgen","galaxy"]}
@@ -18,19 +19,19 @@ def get_loc(fil):
             lines+=1
     return lines
 
-def get_directories(path, extension):
+def get_directories(path, extensions):
     dirs = []
     # r=root, d=directories, f = files
     for r, d, f in os.walk(path):
         dirs.append(r)
     return dirs
 
-def get_files(path, extension):
+def get_files(path, extensions):
     files = []
     # r=root, d=directories, f = files
     for r, d, f in os.walk(path):
         for file in f:
-            if file.endswith(extension):
+            if any(file.endswith('.' + ext) for ext in extensions):
             #if extension in file:
                 files.append(os.path.join(r, file))
     return files
@@ -49,9 +50,9 @@ def extract_info(fil, extension):
                     if (pat.match(line)):
                         imports.add(line.strip())
                 except:
-                    print("Encoding error")
+                    print("Encoding error for file = %s" % fil)
     except:
-        print("Encoding eror")
+        print("Encoding error for file = %s" % fil)
     return lines, list(imports)
 
 # Plural because more than one module may be imported in one statement
@@ -74,9 +75,9 @@ def get_modules_python(imp):
     return modules
 
 # Returns list of packages/modules in same package
-def get_internal_modules(files, directories, extension):
+def get_internal_modules(files, directories, extensions):
     ret = []
-    if (extension == "py"):
+    if ("py" in extensions):
         for f in files:
             basename = ntpath.basename(f)
             fileName, fileExt = os.path.splitext(basename)
@@ -97,7 +98,8 @@ def extract_modules(imp, extension):
 
 def is_internal_mod_python(statement, internal, source_dir):
     parts = statement.split(".")
-    return all(x in internal for x in parts) or (parts[0] == source_dir)
+    #print('source dir = %s' % source_dir)
+    return all(x in internal for x in parts) or (parts[0].lower() == source_dir.lower())
 
 def is_internal_import(imp, extension, internal, source_dir):
     current_mods = extract_modules(imp, extension)
@@ -129,14 +131,17 @@ if (len(sys.argv) > 3):
 else:
     project_name = source_dir_name
 
+#print('path_arg = %s' % path_arg)
+#print('source_dir_name = %s' % source_dir_name)
 if (not os.path.exists(path_arg)):
     print("Path not found")
 
 
-files = get_files(path_arg, extension)
-dirs = get_directories(path_arg, extension)
+extensions = ext_to_multiple_ext[extension]
+files = get_files(path_arg, extensions)
+dirs = get_directories(path_arg, extensions)
 
-internal_modules = get_internal_modules(files, dirs, extension)
+internal_modules = get_internal_modules(files, dirs, extensions)
 #print("Internal modules")
 #print(internal_modules)
 
@@ -148,13 +153,18 @@ n_loc = 0
 n_files_with_external_imps = 0
 for f in files:
     nfiles+=1
-    lines, imp = extract_info(f, extension)
+    ext = f.split('.')[-1]
+    if (ext not in extensions):
+        print('Extension %s not in extension list' % ext)
+        print('File path is %s' % f)
+        continue
+    lines, imp = extract_info(f, ext)
     n_loc +=lines
     n_imp += len(imp)
     external_imp_flag = False
     for statement in imp:
-        if (is_external_import(statement, extension, internal_modules, source_dir_name)):
-            if (is_package_CS(statement, extension)):
+        if (is_external_import(statement, ext, internal_modules, source_dir_name)):
+            if (is_package_CS(statement, ext)):
                 print(statement)
                 n_ext_cs_imp+=1
             else:
