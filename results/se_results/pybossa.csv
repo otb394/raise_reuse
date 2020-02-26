@@ -1,2 +1,2 @@
-Project Name,Files,External CS Imports,External Non CS Imports,All Imports,Lines of code
-pybossa,370,0,773,1519,68283
+Project Name,Files,Files with external imports,External CS Imports,External Non CS Imports,All Imports,Lines of code
+pybossa,370,292,0,773,1519,68283

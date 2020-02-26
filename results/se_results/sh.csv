@@ -1,2 +1,2 @@
-Project Name,Files,External CS Imports,External Non CS Imports,All Imports,Lines of code
-sh,3,0,54,56,6690
+Project Name,Files,Files with external imports,External CS Imports,External Non CS Imports,All Imports,Lines of code
+sh,3,3,0,54,56,6690

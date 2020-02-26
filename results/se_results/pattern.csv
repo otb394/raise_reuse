@@ -1,2 +1,2 @@
-Project Name,Files,External CS Imports,External Non CS Imports,All Imports,Lines of code
-pattern,121,0,687,813,44028
+Project Name,Files,Files with external imports,External CS Imports,External Non CS Imports,All Imports,Lines of code
+pattern,121,120,0,687,813,44028

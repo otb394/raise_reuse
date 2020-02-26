@@ -1,2 +1,2 @@
-Project Name,Files,External CS Imports,External Non CS Imports,All Imports,Lines of code
-AndroidViewClient,75,0,209,263,14934
+Project Name,Files,Files with external imports,External CS Imports,External Non CS Imports,All Imports,Lines of code
+AndroidViewClient,75,51,0,209,263,14934

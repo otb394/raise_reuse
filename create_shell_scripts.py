@@ -6,6 +6,7 @@ import sys
 
 def extract_repo_name(link):
     #https://github.com/mosdef-hub/foyer.git
+    # TODO: Handle case where link does not end in .git
     return '.'.join((link.split('/')[-1]).split('.')[0:-1:1])
 
 git_links_file = sys.argv[1]

@@ -1,2 +1,2 @@
-Project Name,Files,External CS Imports,External Non CS Imports,All Imports,Lines of code
-python-haystack,115,0,267,439,28324
+Project Name,Files,Files with external imports,External CS Imports,External Non CS Imports,All Imports,Lines of code
+python-haystack,115,96,0,267,439,28324

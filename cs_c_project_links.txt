@@ -1,0 +1,6 @@
+https://github.com/flame/blis.git
+https://github.com/keplerproject/luafilesystem.git
+https://github.com/cooperative-computing-lab/cctools.git
+https://github.com/mdtraj/mdtraj.git
+https://github.com/libMesh/libmesh.git
+https://github.com/open-mpi/ompi.git

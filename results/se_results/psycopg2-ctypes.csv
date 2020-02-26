@@ -1,2 +1,2 @@
-Project Name,Files,External CS Imports,External Non CS Imports,All Imports,Lines of code
-psycopg2-ctypes,48,0,87,230,12860
+Project Name,Files,Files with external imports,External CS Imports,External Non CS Imports,All Imports,Lines of code
+psycopg2-ctypes,48,37,0,87,230,12860

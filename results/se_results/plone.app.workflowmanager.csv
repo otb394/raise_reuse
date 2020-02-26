@@ -1,2 +1,2 @@
-Project Name,Files,External CS Imports,External Non CS Imports,All Imports,Lines of code
-plone.app.workflowmanager,23,0,70,113,2072
+Project Name,Files,Files with external imports,External CS Imports,External Non CS Imports,All Imports,Lines of code
+plone.app.workflowmanager,23,18,0,70,113,2072

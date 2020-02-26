@@ -20,6 +20,9 @@ files = get_files(results_path, '.csv')
 
 dfs = [pd.read_csv(f) for f in files]
 result_df = pd.concat(dfs, axis=0)
+for index,row in result_df.iterrows():
+    if (row['All Imports'] == 0):
+        print('%s has 0 imports. Removed from the list.' % row['Project Name'])
 result_df = result_df[result_df['All Imports'] != 0]
 print(result_df)
 result_df.to_csv('result.csv', index=False)

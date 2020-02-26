@@ -1,0 +1,17 @@
+https://github.com/PCMSolver/pcmsolver.git
+https://github.com/dtarb/TauDEM.git
+https://github.com/Amber-MD/cpptraj.git
+https://github.com/ValeevGroup/mpqc.git
+https://github.com/GooFit/GooFit.git
+https://github.com/SCIInstitute/SCIRun.git
+https://github.com/N-BodyShop/changa.git
+https://github.com/cyclus/cyclus.git
+https://github.com/plumed/plumed2.git
+https://github.com/m-a-d-n-e-s-s/madness.git
+https://bitbucket.org/glotzer/hoomd-blue
+https://github.com/irods/irods.git
+https://github.com/pandegroup/openmm.git
+https://github.com/lammps/lammps.git
+https://github.com/psi4/psi4.git
+https://github.com/dealii/dealii.git
+https://github.com/trilinos/Trilinos.git

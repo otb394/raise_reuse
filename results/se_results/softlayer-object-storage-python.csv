@@ -1,2 +1,2 @@
-Project Name,Files,External CS Imports,External Non CS Imports,All Imports,Lines of code
-softlayer-object-storage-python,18,0,30,55,2933
+Project Name,Files,Files with external imports,External CS Imports,External Non CS Imports,All Imports,Lines of code
+softlayer-object-storage-python,18,12,0,30,55,2933
